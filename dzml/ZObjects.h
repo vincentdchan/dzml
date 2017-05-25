@@ -88,22 +88,22 @@ namespace dzml
 
 		inline bool IsForwarded() const
 		{
-			return flag & GC_FORWARDED_MASK != 0;
+			return (flag & GC_FORWARDED_MASK) != 0;
 		}
 
 		inline bool IsRemembered() const
 		{
-			return flag & GC_REMEMBERED_MASK != 0;
+			return (flag & GC_REMEMBERED_MASK) != 0;
 		}
 
 		inline bool IsGlobal() const
 		{
-			return flag & GC_GLOBAL_MASK != 0;
+			return (flag & GC_GLOBAL_MASK) != 0;
 		}
 
 		inline bool IsMutatable() const
 		{
-			return flag & GC_MUTATABLE_MASK != 0;
+			return (flag & GC_MUTATABLE_MASK) != 0;
 		}
 
 		inline void SetForwarded(bool bl)

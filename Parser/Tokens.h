@@ -21,7 +21,7 @@
 	V(LeftBracket, "[") \
 	V(RightBracket, "]") \
 	V(Comma, ",") \
-	V(Plus, "+") \
+	V(Add, "+") \
 	V(Sub, "-") \
 	V(Mul, "*") \
 	V(Div, "/") \
@@ -74,10 +74,5 @@ namespace dzml
 		TokenType type_;
 		std::unique_ptr<std::string> text_;
 	};
-
-	Token::Token(Token&& that):
-		line_(that.line_), offset_(that.offset_),
-		type_(that.type_), text_(std::move(that.text_))
-	{ }
 
 }
