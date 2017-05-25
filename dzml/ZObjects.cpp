@@ -6,7 +6,7 @@ namespace dzml
 
 	void ZObject::Initialize()
 	{
-		type_ = Type::Integer;
+		type_ = Type::Nil;
 	}
 
 	ZIntegerObject* ZObject::toInt()

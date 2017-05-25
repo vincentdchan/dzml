@@ -21,6 +21,7 @@ namespace dzml
 
 		enum class Type : int8_t
 		{
+			Nil,
 			Integer,
 			Float,
 			Double,
@@ -39,6 +40,16 @@ namespace dzml
 			return type_;
 		}
 
+		inline bool isNil() const
+		{
+			return type_ == Type::Nil;
+		}
+
+		inline bool isGCObject() const
+		{
+			return static_cast<uint8_t>(type_) >= static_cast<uint8_t>(Type::Integer);
+		}
+
 		ZIntegerObject* toInt();
 		ZFloatObject* toFloat();
 		ZDoubleObject* toDouble();
@@ -54,8 +65,8 @@ namespace dzml
 		/**
 		 * All GCObject has a flag byte
 		 * 00000000
-		 * | AGE  | MUTATABLE | GLOBAL | Remembered | Forwarded |
-		 * | 4bit |    1bit   |   1bit |     1bit   |     1bit  |
+		 * | AGE  |   0  | MUTATABLE | GLOBAL | Remembered | Forwarded |
+		 * | 3bit | 1bit |    1bit   |   1bit |     1bit   |     1bit  |
 		 * 
 		 * if a ZGCObject is mutatable, then it means that the old
 		 * generation could point to the new gen object. Hence, when
@@ -129,13 +140,13 @@ namespace dzml
 
 		inline byte GetAge() const
 		{
-			return flag >> 4;
+			return flag >> 5;
 		}
 
 		inline void SetAge(byte age)
 		{
 			byte left_bits = flag & 0xF;
-			flag = (age << 4) & left_bits;
+			flag = (age << 5) & left_bits;
 		}
 
 		inline void IncAge()
