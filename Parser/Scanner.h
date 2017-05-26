@@ -51,8 +51,31 @@ namespace dzml
 				}
 			}
 
-			if (*(tmp-1) != '"')
+			*num = tmp - txt;
+			return true;
+		}
+
+		inline bool TestChar(const char* txt, unsigned int *num, const char*& error)
+		{
+			auto tmp = txt;
+			if (*tmp++ != '\'') return false;
+
+			if (*tmp == '\\')
+				tmp += 2;
+			else if (*tmp == '\n')
+			{
+				error = "A line breaker in a char, try to use escape char \\n.";
 				return false;
+			}
+			else
+				tmp++;
+
+			if (*tmp++ != '\'')
+			{
+				error = "A char must end with \'";
+				return false;
+			}
+
 			*num = tmp - txt;
 			return true;
 		}

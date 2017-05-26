@@ -11,7 +11,7 @@ using namespace boost::unit_test;
 using namespace dzml;
 
 const char* TestTxt1 = "let add a b = a + - * / b \n"
-"in letrec inc = add 1 \n"
+"in letrec inc = add 1 'c' \n"
 "where := \"abc\\\"cde\"";
 
 const char* TestTxt2 = "323abc";
@@ -36,6 +36,7 @@ dzml::TokenType TestType1 [] = {
 	TokenType::Equal,
 	TokenType::Literal,
 	TokenType::IntegerNumber,
+	TokenType::Char,
 	TokenType::Where,
 	TokenType::Assign,
 	TokenType::String,
@@ -63,7 +64,7 @@ public:
 		std::vector<ScannerError> errors;
 
 		BOOST_TEST(scanner.Scan(result1, errors));
-		BOOST_TEST(result1.size() == 20);
+		BOOST_TEST(result1.size() == 21);
 	}
 
 	void TestMethod2()

@@ -11,7 +11,7 @@
 #define GC_FORWARDED_MASK  0x1
 #define GC_REMEMBERED_MASK  0x2
 #define GC_GLOBAL_MASK 0x4
-#define GC_MUTATABLE_MASK 0x8
+#define GC_MUTABLE_MASK 0x8
 
 namespace dzml
 {
@@ -22,6 +22,7 @@ namespace dzml
 		enum class Type : int8_t
 		{
 			Nil,
+			Bool,
 			Integer,
 			Float,
 			Double,
@@ -65,10 +66,10 @@ namespace dzml
 		/**
 		 * All GCObject has a flag byte
 		 * 00000000
-		 * | AGE  |   0  | MUTATABLE | GLOBAL | Remembered | Forwarded |
-		 * | 3bit | 1bit |    1bit   |   1bit |     1bit   |     1bit  |
+		 * | AGE  |   0  | MUTABLE | GLOBAL | Remembered | Forwarded |
+		 * | 3bit | 1bit |  1bit   |  1bit  |    1bit    |     1bit  |
 		 * 
-		 * if a ZGCObject is mutatable, then it means that the old
+		 * if a ZGCObject is mutable, then it means that the old
 		 * generation could point to the new gen object. Hence, when
 		 * the pointers update in the old generation mutatable object,
 		 * the GC should log it in the remembered set.
@@ -101,9 +102,9 @@ namespace dzml
 			return (flag & GC_GLOBAL_MASK) != 0;
 		}
 
-		inline bool IsMutatable() const
+		inline bool IsMutable() const
 		{
-			return (flag & GC_MUTATABLE_MASK) != 0;
+			return (flag & GC_MUTABLE_MASK) != 0;
 		}
 
 		inline void SetForwarded(bool bl)
@@ -122,12 +123,12 @@ namespace dzml
 				flag &= (!GC_REMEMBERED_MASK);
 		}
 
-		inline void SetMutatable(bool bl)
+		inline void SetMutable(bool bl)
 		{
 			if (bl)
-				flag != GC_MUTATABLE_MASK;
+				flag != GC_MUTABLE_MASK;
 			else
-				flag &= (!GC_MUTATABLE_MASK);
+				flag &= (!GC_MUTABLE_MASK);
 		}
 
 		inline void SetGlobal(bool bl)

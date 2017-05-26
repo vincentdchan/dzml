@@ -25,7 +25,7 @@ namespace dzml
 		if (size > -1)
 			_size = static_cast<unsigned int>(size);
 		else
-			_size = strlen(text);
+			_size = static_cast<unsigned int>(strlen(text));
 		begin = ptr = text;
 		end = begin + _size;
 	}
@@ -77,12 +77,25 @@ namespace dzml
 			token.text_ = std::make_unique<std::string>(buf);
 			return true;
 		}
-		if (TestWhite(ptr, &len))
+		else if (Peek() == '\'')
+		{
+			bool bl = TestChar(ptr, &len, error);
+			if (!bl) return bl;
+			token.type_ = TokenType::Char;
+			LOAD_BUF(buf);
+			token.text_ = std::make_unique<std::string>(buf);
+			return true;
+		}
+		else if (TestWhite(ptr, &len))
 		{
 			token.type_ = TokenType::White;
 			LOAD_BUF(buf);
 			if (ContainsLineBreacker(buf))
 				IncLine();
+			return true;
+		}
+		else if (TestOp(token.type_))
+		{
 			return true;
 		}
 		else if (TestDigitStart(ptr, &len))
@@ -149,10 +162,6 @@ namespace dzml
 				error = "Literal too long.";
 				return false;
 			}
-		}
-		else if (TestOp(token.type_))
-		{
-			return true;
 		}
 		else
 		{

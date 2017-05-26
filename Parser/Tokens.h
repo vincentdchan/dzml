@@ -3,6 +3,7 @@
 #include <string>
 
 #define KEYWORD_TOKENS_DEF(V) \
+	V(Type, "type") \
 	V(LetRec, "letrec") \
 	V(Let, "let") \
 	V(In, "in") \
@@ -17,24 +18,44 @@
 	V(Of, "of") \
 	V(Fun, "fun") \
 	V(End, "end") \
+	V(True, "true") \
+	V(False, "false") \
+	V(Module, "module") \
+	V(Public, "public") \
+	V(Private, "private") \
 	V(Mut, "mut")
 
 #define OP_TOKENS_DEF(V) \
 	V(LeftParen, "(") \
 	V(RightParen, ")") \
+	V(LeftBracketVBar, "[|") \
+	V(RightBracketVBar, "|]") \
 	V(LeftBracket, "[") \
 	V(RightBracket, "]") \
+	V(LeftCurlyBracket, "{") \
+	V(RightCurlyBracket, "}") \
+	V(VBar, "|") \
 	V(Comma, ",") \
+	V(Hat, "^") \
+	V(Semicolon, ";") \
+	V(Dot, ".") \
+	V(At, "@") \
+	V(RightArrow, "->") \
+	V(LeftArrow, "<-") \
 	V(Add, "+") \
 	V(Sub, "-") \
 	V(Mul, "*") \
 	V(Div, "/") \
+	V(Mod, "mod") \
+	V(Xor, "xor") \
 	V(Equal, "=") \
-	V(Greater, ">") \
-	V(Less, "<") \
 	V(GreaterEqual, ">=") \
 	V(LessEqual, "<=") \
-	V(Assign, ":=")
+	V(Greater, ">") \
+	V(Less, "<") \
+	V(Assign, ":=") \
+	V(DoubleColon, "::") \
+	V(Colon, ":")
 
 namespace dzml
 {
@@ -55,6 +76,7 @@ namespace dzml
 		// operators
 		OP_TOKENS_DEF(DEF_OP)
 		// String
+		Char,
 		String,
 		// literial
 		Literal,
