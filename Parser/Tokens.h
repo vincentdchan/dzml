@@ -5,7 +5,11 @@
 #define KEYWORD_TOKENS_DEF(V) \
 	V(LetRec, "letrec") \
 	V(Let, "let") \
+	V(In, "in") \
+	V(Where, "where") \
 	V(Val, "val") \
+	V(And, "and") \
+	V(Or, "or") \
 	V(If, "if") \
 	V(Then, "then") \
 	V(Else, "else") \

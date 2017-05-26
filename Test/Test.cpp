@@ -14,6 +14,14 @@ test_suite* init_unit_test_suite(int /*argc*/, char* /*argv*/[])
 		add(BOOST_TEST_CASE(boost::bind(&ScannerTest::TestMethod1, tester)));
 	framework::master_test_suite().
 		add(BOOST_TEST_CASE(boost::bind(&ScannerTest::TestMethod2, tester)));
+	framework::master_test_suite().
+		add(BOOST_TEST_CASE(boost::bind(&ScannerTest::TestMethod3, tester)));
+	framework::master_test_suite().
+		add(BOOST_TEST_CASE(boost::bind(&ScannerTest::TestMethod4, tester)));
+	framework::master_test_suite().
+		add(BOOST_TEST_CASE(boost::bind(&ScannerTest::TestMethod5, tester)));
+	framework::master_test_suite().
+		add(BOOST_TEST_CASE(boost::bind(&ScannerTest::TestMethod6, tester)));
 
 	return 0;
 }

@@ -5,13 +5,20 @@
 #include "Tokens.h"
 #include "Regex.hpp"
 
-#define BUFFER_SIZE 256
+#define BUFFER_SIZE 512
 
 #define SafeAssign(PTR, B) \
 	if ((PTR) != nullptr) *(PTR) = B;
 
 namespace dzml
 {
+
+	struct ScannerError
+	{
+		unsigned int line;
+		unsigned int offset;
+		const char* message;
+	};
 
 	class Scanner final
 	{
@@ -24,22 +31,60 @@ namespace dzml
 		unsigned int line_;
 		unsigned int offset_;
 
-		bool TestLiteral(const char* txt, unsigned int *num)
+		static bool TestString(const char* txt, unsigned int *num, const char*& error)
+		{
+			const char* tmp = txt;
+			if (*tmp++ != '"')
+				return false;
+
+			char ch;
+			while ((ch = *tmp++) != '"')
+			{
+				if (ch == '\n')
+				{
+					error = "Line breaker in a string";
+					return false;
+				}
+				else if (ch == '\\')
+				{
+					tmp++;
+				}
+			}
+
+			if (*(tmp-1) != '"')
+				return false;
+			*num = tmp - txt;
+			return true;
+		}
+
+		static bool TestDigitStart(const char* txt, unsigned *num)
+		{
+			using namespace Regex;
+			return Seq <IsDigit,
+				TestAny<
+					Or<
+						Or<'_', '\''>,
+						Or<IsAlpha,
+							Or<IsDigit, IsAnotherByte>>>>>(txt, num);
+		}
+
+		static bool TestLiteral(const char* txt, unsigned int *num)
 		{
 			using namespace Regex;
 			return 
 				Seq<
-					Or<'_', IsAlpha>, 
+					Or<'_', Or<IsAlpha, IsAnotherByte>>, 
 					TestAny<
 						Or<
 							Or<'_', '\''>,
-							Or<IsAlpha, IsDigit>
+							Or<IsAlpha, 
+								Or<IsDigit, IsAnotherByte>>
 						>
 				>>
 				(txt, num);
 		}
 
-		bool TestWhite(const char* txt, unsigned int * num)
+		static bool TestWhite(const char* txt, unsigned int * num)
 		{
 			using namespace Regex;
 			return Or<' ',
@@ -47,7 +92,7 @@ namespace dzml
 				Or<'\n', '\t'>>>(txt, num);
 		}
 
-		bool TestInteger(const char* txt, unsigned int * num)
+		static bool TestInteger(const char* txt, unsigned int * num)
 		{
 			using namespace Regex;
 			return TestMany<IsDigit>(txt, num);
@@ -70,7 +115,7 @@ namespace dzml
 			}
 		}
 
-		bool TestHex(const char* txt, unsigned int* len)
+		static bool TestHex(const char* txt, unsigned int* len)
 		{
 			using namespace Regex;
 			return Seq<'0',
@@ -95,10 +140,11 @@ namespace dzml
 	public:
 		Scanner(const char* str, int size = -1);
 
-		bool Scan(std::vector<Token>&, const char*& error);
-		bool Scan(Token& token, const char*& error);
+		bool Scan(std::vector<Token>&, std::vector<ScannerError>& errors);
 
 	private:
+		bool Scan(Token& token, const char*& error);
+
 		bool TestKeyword(unsigned int length, TokenType & keyword);
 		bool TestStr(const char* target, unsigned int *, bool swallow = false);
 		bool TestOp(TokenType& type);
@@ -125,6 +171,19 @@ namespace dzml
 			++line_;
 			line_begin_ = ptr;
 			offset_ = 0;
+		}
+
+		/**
+		 * if reach the end of file, return false
+		 */
+		inline bool NextLine()
+		{
+			while (!ReachEnd())
+			{
+				if (*ptr++ == '\n')
+					return true;
+			}
+			return false;
 		}
 
 	};

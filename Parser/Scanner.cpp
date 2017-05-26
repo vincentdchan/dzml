@@ -9,6 +9,9 @@
 
 #define DEF_KW(NAME, D) const char * KW_##NAME = D;
 #define DEF_OP(NAME, D) const char * OP_##NAME = D;
+
+const char* NumberError = "Number constant tokenize error";
+
 namespace dzml
 {
 
@@ -27,15 +30,25 @@ namespace dzml
 		end = begin + _size;
 	}
 
-	bool Scanner::Scan(std::vector<Token>& result , const char*& error)
+	bool Scanner::Scan(std::vector<Token>& result , std::vector<ScannerError>& errors)
 	{
+		const char* error;
 		bool hr = true;
+		bool has_error = false;
 		while (!ReachEnd())
 		{
 			Token token;
 			hr = Scan(token, error);
 			if (!hr)
-				break;
+			{
+				has_error = true;
+				ScannerError sr;
+				sr.message = error;
+				sr.line = line_;
+				sr.offset = offset_;
+				errors.push_back(sr);
+				NextLine();
+			}
 			if (token.type_ != TokenType::White)
 			{
 				token.line_ = line_;
@@ -43,13 +56,27 @@ namespace dzml
 				result.push_back(std::move(token));
 			}
 		}
-		return hr;
+		return hr && !has_error;
 	}
 
 	bool Scanner::Scan(Token& token, const char*& error)
 	{
 		unsigned int len = 0;
 		char buf[BUFFER_SIZE];
+		if (Peek() == '"')
+		{
+			bool bl = TestString(ptr, &len, error);
+			if (!bl) return bl;
+			if (len >= BUFFER_SIZE)
+			{
+				error = "String too long";
+				return false;
+			}
+			token.type_ = TokenType::String;
+			LOAD_BUF(buf);
+			token.text_ = std::make_unique<std::string>(buf);
+			return true;
+		}
 		if (TestWhite(ptr, &len))
 		{
 			token.type_ = TokenType::White;
@@ -57,34 +84,54 @@ namespace dzml
 			if (ContainsLineBreacker(buf))
 				IncLine();
 			return true;
-		} 
-		else if (TestInteger(ptr, &len))
-		{
-			token.type_ = TokenType::IntegerNumber;
-			LOAD_BUF(buf);
-			token.text_ = std::make_unique<std::string>(buf);
-			return true;
 		}
-		else if (TestHex(ptr, &len))
+		else if (TestDigitStart(ptr, &len))
 		{
-			token.type_ = TokenType::HexNumber;
-			LOAD_BUF(buf);
-			token.text_ = std::make_unique<std::string>(buf);
-			return true;
-		}
-		else if (TestFloat(ptr, &len))
-		{
-			token.type_ = TokenType::FloatNumber;
-			LOAD_BUF(buf);
-			token.text_ = std::make_unique<std::string>(buf);
-			return true;
-		}
-		else if (TestDouble(ptr, &len))
-		{
-			token.type_ = TokenType::DoubleNumber;
-			LOAD_BUF(buf);
-			token.text_ = std::make_unique<std::string>(buf);
-			return true;
+
+#define CHECK_LEN(OUT, IN) \
+	if ((OUT) != (IN)) \
+	{ \
+		error = NumberError; \
+		return false; \
+	}
+			unsigned int innerlen = 0;
+			if (TestInteger(ptr, &innerlen))
+			{
+				CHECK_LEN(len, innerlen);
+				token.type_ = TokenType::IntegerNumber;
+				LOAD_BUF(buf);
+				token.text_ = std::make_unique<std::string>(buf);
+				return true;
+			} 
+			else if (TestHex(ptr, &innerlen))
+			{
+				CHECK_LEN(len, innerlen);
+				token.type_ = TokenType::HexNumber;
+				LOAD_BUF(buf);
+				token.text_ = std::make_unique<std::string>(buf);
+				return true;
+			}
+			else if (TestFloat(ptr, &innerlen))
+			{
+				CHECK_LEN(len, innerlen);
+				token.type_ = TokenType::FloatNumber;
+				LOAD_BUF(buf);
+				token.text_ = std::make_unique<std::string>(buf);
+				return true;
+			}
+			else if (TestDouble(ptr, &innerlen))
+			{
+				CHECK_LEN(len, innerlen);
+				token.type_ = TokenType::DoubleNumber;
+				LOAD_BUF(buf);
+				token.text_ = std::make_unique<std::string>(buf);
+				return true;
+			}
+			else
+			{
+				error = "Number constant tokenize error";
+				return false;
+			}
 		}
 		else if (TestLiteral(ptr, &len))
 		{
