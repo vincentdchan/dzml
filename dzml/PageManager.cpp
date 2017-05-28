@@ -16,10 +16,10 @@ namespace dzml
 		auto result = ptr_;
 		ptr_ += size;
 		remained_space_ -= size;
-		return ptr_;
+		return result;
 	}
 
-	PageManager::PageManager(uc32 page_size=1, bool extendable):
+	PageManager::PageManager(uc32 page_size, bool extendable):
 		extendable_(extendable)
 	{
 		for (uc32 i = 0; i < page_size; ++i)

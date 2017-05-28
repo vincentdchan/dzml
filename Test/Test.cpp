@@ -2,11 +2,21 @@
 //
 
 #include "stdafx.h"
-#include "ScannerTest.h"
+// #include "ScannerTest.h"
 #include <boost/bind.hpp>
 #include <iostream>
+#include <boost/test/unit_test.hpp>
 
-test_suite* init_unit_test_suite(int /*argc*/, char* /*argv*/[])
+BOOST_AUTO_TEST_CASE(first_test)
+{
+	int i = 0;
+	BOOST_TEST(i);
+	BOOST_TEST(i == 2);
+}
+
+/*
+test_suite* init_unit_test_suite(int /*argc*/ //, char* /*argv*/[])
+/*
 {
 	boost::shared_ptr<ScannerTest> tester(new ScannerTest);
 
@@ -25,3 +35,4 @@ test_suite* init_unit_test_suite(int /*argc*/, char* /*argv*/[])
 
 	return 0;
 }
+*/

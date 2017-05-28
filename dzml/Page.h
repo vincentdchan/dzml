@@ -7,7 +7,7 @@ namespace dzml
 	 * the size of a page is fixed, defined
 	 * at compile time.
 	 */
-	class Page
+	class Page final
 	{
 	private:
 		byte * data_;

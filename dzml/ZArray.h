@@ -10,7 +10,7 @@ namespace dzml
 	{
 	private:
 		uc32 capacity_;
-		(ZObject *)data_[0];
+		ZObject* data_[0];
 
 	public:
 		
