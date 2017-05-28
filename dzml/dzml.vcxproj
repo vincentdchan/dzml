@@ -134,7 +134,7 @@
     <ClInclude Include="dzml.h" />
     <ClInclude Include="GC.h" />
     <ClInclude Include="Page.h" />
-    <ClInclude Include="PageSpace.h" />
+    <ClInclude Include="PageManager.h" />
     <ClInclude Include="ZArray.h" />
     <ClInclude Include="ZList.h" />
     <ClInclude Include="ZNumber.hpp" />
@@ -145,7 +145,7 @@
   <ItemGroup>
     <ClCompile Include="GC.cpp" />
     <ClCompile Include="Page.cpp" />
-    <ClCompile Include="PageSpace.cpp" />
+    <ClCompile Include="PageManager.cpp" />
     <ClCompile Include="ZArray.cpp" />
     <ClCompile Include="ZList.cpp" />
     <ClCompile Include="ZObjects.cpp" />

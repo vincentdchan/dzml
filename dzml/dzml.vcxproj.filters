@@ -30,9 +30,6 @@
     <ClInclude Include="Page.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PageSpace.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ZNumber.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -48,6 +45,9 @@
     <ClInclude Include="ZArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PageManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GC.cpp">
@@ -59,13 +59,13 @@
     <ClCompile Include="Page.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PageSpace.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ZList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ZArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PageManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

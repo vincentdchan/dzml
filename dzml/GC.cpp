@@ -6,9 +6,12 @@ namespace dzml
 	GC::GC():
 		allocatedSpace(0)
 	{
-		young_space = std::make_unique<AllocatablePageSpace>(YOUNG_GEN_PAGE_SIZE);
-		swap_space = std::make_unique<AllocatablePageSpace>(1);
-		old_space = std::make_unique<AllocatablePageSpace>(OLD_GEN_SPACE_SIZE);
+		young_space = std::make_unique<PageManager>(2, false);
+		swap_from_space = std::make_unique<PageManager>(4, true);
+		swap_to_space = std::make_unique<PageManager>(4, true);
+		old_space = std::make_unique<PageManager>(4, true);
+
+		one_ = this;
 	}
 
 	byte* GC::Alloc(uc32 length)
@@ -45,6 +48,13 @@ namespace dzml
 	void GC::MajorGC()
 	{
 
+	}
+
+	void GC::SwapFromToSpace()
+	{
+		auto tmp = std::move(swap_from_space);
+		swap_from_space = std::move(swap_to_space);
+		swap_to_space = std::move(tmp);
 	}
 
 	GC::~GC()

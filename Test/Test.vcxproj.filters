@@ -27,6 +27,9 @@
     <ClInclude Include="ScannerTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PageManagerTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

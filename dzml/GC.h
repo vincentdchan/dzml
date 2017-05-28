@@ -1,7 +1,7 @@
 #pragma once
 #include "dzml.h"
 #include "ZObjects.h"
-#include "PageSpace.h"
+#include "PageManager.h"
 #include <memory>
 
 namespace dzml
@@ -16,9 +16,10 @@ namespace dzml
 	{
 	private:
 
-		std::unique_ptr<AllocatablePageSpace> young_space;
-		std::unique_ptr<AllocatablePageSpace> swap_space;
-		std::unique_ptr<AllocatablePageSpace> old_space;
+		std::unique_ptr<PageManager> young_space;
+		std::unique_ptr<PageManager> swap_from_space;
+		std::unique_ptr<PageManager> swap_to_space;
+		std::unique_ptr<PageManager> old_space;
 
 		uc32 allocatedSpace;
 
@@ -31,8 +32,6 @@ namespace dzml
 		{
 			return one_;
 		}
-
-		static const uc32 PageSize = 0xFFF; // 4k
 
 		GC();
 		GC(const GC&) = delete;
@@ -70,6 +69,7 @@ namespace dzml
 		~GC();
 
 	private:
+		void SwapFromToSpace();
 		byte* Alloc(uc32, bool gc);
 
 	};
