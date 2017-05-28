@@ -21,7 +21,16 @@ namespace dzml
 		std::unique_ptr<AllocatablePageSpace> old_space;
 
 		uc32 allocatedSpace;
+
+		ZObject nil_;
+
+		static GC* one_;
 	public:
+
+		static GC* GetOne()
+		{
+			return one_;
+		}
 
 		static const uc32 PageSize = 0xFFF; // 4k
 
@@ -48,7 +57,10 @@ namespace dzml
 			auto gco = reinterpret_cast<T*>(base);
 			gco->Initialize();
 			*ptr = gco;
+			return true;
 		}
+
+		ZObject * GetNil();
 
 		inline uc32 GetAllocatedSpace() const
 		{

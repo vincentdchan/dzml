@@ -135,13 +135,19 @@
     <ClInclude Include="GC.h" />
     <ClInclude Include="Page.h" />
     <ClInclude Include="PageSpace.h" />
-    <ClInclude Include="ZNumberObject.hpp" />
+    <ClInclude Include="ZArray.h" />
+    <ClInclude Include="ZList.h" />
+    <ClInclude Include="ZNumber.hpp" />
     <ClInclude Include="ZObjects.h" />
+    <ClInclude Include="ZString.hpp" />
+    <ClInclude Include="ZTuple.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GC.cpp" />
     <ClCompile Include="Page.cpp" />
     <ClCompile Include="PageSpace.cpp" />
+    <ClCompile Include="ZArray.cpp" />
+    <ClCompile Include="ZList.cpp" />
     <ClCompile Include="ZObjects.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

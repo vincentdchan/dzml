@@ -27,13 +27,25 @@
     <ClInclude Include="GC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ZNumberObject.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Page.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PageSpace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZNumber.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZString.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZTuple.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -48,6 +60,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PageSpace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ZArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

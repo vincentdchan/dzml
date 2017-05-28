@@ -32,6 +32,11 @@ namespace dzml
 		return result;
 	}
 
+	ZObject * GC::GetNil()
+	{
+		return &nil_;
+	}
+
 	void GC::MinorGC()
 	{
 

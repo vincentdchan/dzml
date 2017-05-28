@@ -23,7 +23,10 @@
 	V(Module, "module") \
 	V(Public, "public") \
 	V(Private, "private") \
-	V(Mut, "mut")
+	V(Mut, "mut") \
+	V(Raise, "raise") \
+	V(Exception, "exception") \
+	V(Handle, "handle")
 
 #define OP_TOKENS_DEF(V) \
 	V(LeftParen, "(") \

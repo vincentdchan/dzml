@@ -26,6 +26,10 @@ namespace dzml
 			Integer,
 			Float,
 			Double,
+			Array,
+			String,
+			Tuple,
+			List,
 		};
 
 	protected:
@@ -34,7 +38,7 @@ namespace dzml
 
 	public:
 
-		void Initialize();
+		ZObject();
 
 		inline Type GetType() const
 		{
@@ -48,14 +52,8 @@ namespace dzml
 
 		inline bool isGCObject() const
 		{
-			return static_cast<uint8_t>(type_) >= static_cast<uint8_t>(Type::Integer);
+			return static_cast<uint8_t>(type_) > static_cast<uint8_t>(Type::Nil);
 		}
-
-		ZIntegerObject* toInt();
-		ZFloatObject* toFloat();
-		ZDoubleObject* toDouble();
-
-		DISABLE_STD(ZObject)
 
 	};
 
@@ -126,7 +124,7 @@ namespace dzml
 		inline void SetMutable(bool bl)
 		{
 			if (bl)
-				flag != GC_MUTABLE_MASK;
+				flag |= GC_MUTABLE_MASK;
 			else
 				flag &= (!GC_MUTABLE_MASK);
 		}
@@ -134,7 +132,7 @@ namespace dzml
 		inline void SetGlobal(bool bl)
 		{
 			if (bl)
-				flag != GC_GLOBAL_MASK;
+				flag |= GC_GLOBAL_MASK;
 			else
 				flag &= (!GC_GLOBAL_MASK);
 		}
