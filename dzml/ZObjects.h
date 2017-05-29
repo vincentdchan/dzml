@@ -9,9 +9,11 @@
 	~NAME() = delete;
 
 #define GC_FORWARDED_MASK  0x1
+#define GC_MARKED_MASK  0x1
 #define GC_REMEMBERED_MASK  0x2
 #define GC_GLOBAL_MASK 0x4
 #define GC_MUTABLE_MASK 0x8
+#define GC_LARGE_MASK 0x10
 
 namespace dzml
 {
@@ -64,8 +66,12 @@ namespace dzml
 		/**
 		 * All GCObject has a flag byte
 		 * 00000000
-		 * | AGE  |   0  | MUTABLE | GLOBAL | Remembered | Forwarded |
-		 * | 3bit | 1bit |  1bit   |  1bit  |    1bit    |     1bit  |
+		 * | Age  | Large | Mutable | Global | Remembered |           |
+		 * |------|-------|---------|--------|------------|-----------|
+		 * |      |   0   |         |        |            | Forwarded |
+		 * |      |   1   |         |        |            |   Marked  |
+		 * |------|-------|---------|--------|------------|-----------|
+		 * | 3bit |  1bit |  1bit   |  1bit  |    1bit    |   1bit    |
 		 * 
 		 * if a ZGCObject is mutable, then it means that the old
 		 * generation could point to the new gen object. Hence, when
@@ -79,11 +85,35 @@ namespace dzml
 		 * so we wouldn't collect it.
 		 */
 		byte flag;
-		ZGCObject * forwarding;
+		union 
+		{
+			ZGCObject * forwarding;
+			ZGCObject * next;
+		};
 
 	public:
 
 		void Initialize();
+
+		inline ZGCObject * GetForwarding() const
+		{
+			return forwarding;
+		}
+
+		inline void SetForwarding(ZGCObject * ptr)
+		{
+			forwarding = ptr;
+		}
+
+		inline ZGCObject * GetNext() const
+		{
+			return next;
+		}
+
+		inline void SetNext(ZGCObject * ptr)
+		{
+			next = ptr;
+		}
 
 		inline bool IsForwarded() const
 		{
@@ -103,6 +133,16 @@ namespace dzml
 		inline bool IsMutable() const
 		{
 			return (flag & GC_MUTABLE_MASK) != 0;
+		}
+
+		inline bool IsLarge() const
+		{
+			return (flag & GC_LARGE_MASK) != 0;
+		}
+
+		inline bool IsMarked() const
+		{
+			return (flag & GC_MARKED_MASK) != 0;
 		}
 
 		inline void SetForwarded(bool bl)
@@ -137,6 +177,22 @@ namespace dzml
 				flag &= (!GC_GLOBAL_MASK);
 		}
 
+		inline void SetLarge(bool bl)
+		{
+			if (bl)
+				flag |= GC_LARGE_MASK;
+			else
+				flag &= (!GC_LARGE_MASK);
+		}
+
+		inline void SetMarked(bool bl)
+		{
+			if (bl)
+				flag |= GC_MARKED_MASK;
+			else
+				flag &= (!GC_MARKED_MASK);
+		}
+
 		inline byte GetAge() const
 		{
 			return flag >> 5;
@@ -144,8 +200,8 @@ namespace dzml
 
 		inline void SetAge(byte age)
 		{
-			byte left_bits = flag & 0xF;
-			flag = (age << 5) & left_bits;
+			byte left_bits = flag & 0x1F;
+			flag = (age << 5) | left_bits;
 		}
 
 		inline void IncAge()
